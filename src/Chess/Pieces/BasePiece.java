@@ -23,6 +23,7 @@ public class BasePiece extends MoveableImage{
     }
 
     public void setCurrent_Tile(Tile current_Tile) {
+        //REDO OR REWRITE CALLS
         if(this.current_Tile != null)
             this.current_Tile.setCurrent_piece(null);
         this.current_Tile = current_Tile;
@@ -40,6 +41,7 @@ public class BasePiece extends MoveableImage{
     }
 
     public List<Tile> getAvailable_Tiles(){
+        //CONVERT CLASS TO ABSTRACT AND TURN THIS INTO THE ABSTRACT METHOD FOR EACH CUSTOM PIECE
         List<Tile> available_Tiles = new ArrayList<Tile>();
         for(int y = current_Tile.getRelative_y() - 1; y <= current_Tile.getRelative_y() + 1;y++){
             for(int x = current_Tile.getRelative_x() - 1 ;x <= current_Tile.getRelative_x() + 1; x++){
