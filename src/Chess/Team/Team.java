@@ -1,6 +1,6 @@
 package Chess.Team;
 
-import Chess.Pieces.ChessPieceBase;
+import Chess.Pieces.BasePiece;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +11,23 @@ public class Team {
     }
 
     private Controller player;
-    private List<ChessPieceBase> chess_pieces;
+    private List<BasePiece> chess_pieces;
 
 
 
     public Team(Controller player){
-        set_Player(player);
-        set_Chess_Pieces(new ArrayList<ChessPieceBase>());
+        setPlayer(player);
+        setChess_Pieces(new ArrayList<BasePiece>());
     }
 
 
-    public List<ChessPieceBase> get_Chess_Pieces(){return this.chess_pieces;}
+    public List<BasePiece> get_Chess_Pieces(){return this.chess_pieces;}
     public Controller get_Player(){return this.player;}
 
-    public void set_Player(Controller player){this.player = player;}
-    public void set_Chess_Pieces(List<ChessPieceBase> chess_pieces){this.chess_pieces = chess_pieces;}
-
+    public void setPlayer(Controller player){this.player = player;}
+    public void setChess_Pieces(List<BasePiece> chess_pieces){this.chess_pieces = chess_pieces;}
+    public void addChess_Piece(BasePiece piece){
+        this.chess_pieces.add(piece);
+        piece.setCurrent_Team(this);
+    }
 }
