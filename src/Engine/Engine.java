@@ -3,18 +3,17 @@ package Engine;
 
 /*This is the base class where most of the game logic will be handled */
 
-import Chess.Pieces.ChessPieceBase;
+import Chess.Pieces.BasePiece;
 import Chess.Team.Team;
-import Tile.Tile;
+import Chess.Tile.Tile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 public class Engine {
     public static Tile[][] tiles;
-    public static Image[][] chess_pieces;
-
     public static Team[] teams;
     public static int turn = -1;
 
@@ -25,26 +24,21 @@ public class Engine {
         teams[0] = new Team(Team.Controller.player);
         teams[1] = new Team(Team.Controller.bot);
 
-        //Rendering in Chess Pieces
+        //Converting Sprite Sheet into Images
+        Image[][] chess_pieces = null;
         try {
             chess_pieces = new Image[2][6];
-            BufferedImage chess_sprite = ImageIO.read(getClass().getClassLoader().getResource("Chess.png"));
+            BufferedImage chess_sprite = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("Chess.png")));
             for(int y = 0; y < 2;y++){
-                for(int x = 0; x < 6;x++){
-                    //Creating Image
+                for(int x = 0; x < 6;x++)
                     chess_pieces[y][x] = chess_sprite.getSubimage(x * 45,y * 45,45,45).getScaledInstance(GUI.square_size,GUI.square_size,Image.SCALE_SMOOTH);
-                }
             }
         }catch(Exception e){
             System.out.println(e.toString());
         }
 
-        /*Adding in Chess Board Tiles (REDO or REWRITE when needed)
-        This is the base initialization that assigns an image to a piece type as well as a team type.
-        */
+        //Creating Tile, Assigning correct chess piece to tile, assigning that chess piece to the correct team
         tiles = new Tile[8][8];
-        Color current_Color;
-
         int[][] board = new int[][]{
                 {4,3,2,0,1,2,3,4},
                 {5,5,5,5,5,5,5,5},
@@ -57,16 +51,14 @@ public class Engine {
         };
 
         for(int y = 0; y < 8;y++){
-            for(int x = 0; x < 8;x++){
-                if(y % 2 == 0)
-                    current_Color = x % 2 == 1 ? Color.BLACK : Color.WHITE;
-                else
-                    current_Color = x % 2 == 0 ? Color.BLACK : Color.WHITE;
-                tiles[y][x] = new Tile(x,y,current_Color);
+            for(int x = 0; x < 8; x++) {
+                tiles[y][x] = new Tile(x, y, GUI.square_size, (x + y) % 2 == 1 ? Color.BLACK : Color.WHITE);
 
-                System.out.println(board[1][1]);
-                if(board[y][x] != -1)
-                    teams[y < 3 ? 0 : 1].get_Chess_Pieces().add(new ChessPieceBase(chess_pieces[y < 3 ? 0 : 1][board[y][x]],tiles[y][x].get_Bounds().x,tiles[y][x].get_Bounds().y));
+                if(board[y][x] == -1)
+                    continue;
+
+                int current_team = y < tiles.length / 2 ? 0 : 1;
+                teams[current_team].addChess_Piece(new BasePiece(chess_pieces[current_team][board[y][x]],tiles[y][x]));
             }
         }
     }
@@ -87,14 +79,15 @@ public class Engine {
     }
 
 
-
-
-    public static Team current_Turn(){return teams[turn % 2];}
-    public static Team next_Turn(){return teams[++turn % 2];}
-    public static boolean occupied_Tile(int x,int y){
-        return inBounds(x,y) && tiles[y][x].get_Chess_Piece() != null;
+    public static boolean isEnemy_Tile(int x,int y,BasePiece piece){
+        return isOccupied_Tile(x,y) && tiles[y][x].getCurrent_piece().getCurrent_Team() != piece.getCurrent_Team();
+    }
+    public static boolean isOccupied_Tile(int x,int y){
+        return inBounds(x,y) && tiles[y][x].getCurrent_piece() != null;
     }
     public static boolean inBounds(int x,int y){
         return x >=0 && x < 8 && y >= 0 && y < 8;
     }
+    public static Team current_Turn(){return teams[turn % 2];}
+    public static Team next_Turn(){return teams[++turn % 2];}
 }
