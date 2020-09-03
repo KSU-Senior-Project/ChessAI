@@ -45,34 +45,38 @@ public abstract class BasePiece extends MoveableImage{
 
     private class TileDistance{
         public int distance;
+        public Point direction;
         public Tile tile;
 
-        public TileDistance(Tile tile,int distance) {
+        public TileDistance(Tile tile,Point direction,int distance) {
             this.distance = distance;
+            this.direction = direction;
             this.tile = tile;
         }
     }
     protected List<Tile> getAvailable_Tiles(int distance){
+        //REDO OR REWRITE
         List<Tile> explored = new ArrayList<Tile>();
         List<TileDistance> open = new ArrayList<TileDistance>();
-        open.add(new TileDistance(getCurrent_Tile(),0));
+        for(int y = -1;y < 2;y++){
+            for(int x = -1;x < 2;x++)
+                open.add(new TileDistance(getCurrent_Tile(),new Point(x,y),0));
+        }
 
         while(open.size() > 0) {
             TileDistance current = open.remove(0);
+            int x = current.direction.x + current.tile.getRelative_x();
+            int y = current.direction.y + current.tile.getRelative_y();
             if(current.distance + 1 > distance)
                 continue;
 
-            for (int y = current.tile.getRelative_y() - 1; y <= current.tile.getRelative_y() + 1; y++) {
-                for (int x = current.tile.getRelative_x() - 1; x <= current.tile.getRelative_x() + 1; x++) {
-                    if(!Engine.inBounds(x,y) || explored.contains(Engine.tiles[y][x]))
-                        continue;
-                    if (!Engine.isOccupied_Tile(x, y)) {
-                        explored.add(Engine.tiles[y][x]);
-                        open.add(new TileDistance(Engine.tiles[y][x],current.distance + 1));
-                    }else if(Engine.isEnemy_Tile(x,y,this))
-                        explored.add(Engine.tiles[y][x]);
-                }
-            }
+            if(!Engine.inBounds(x,y) || explored.contains(Engine.tiles[y][x]))
+                continue;
+            if (!Engine.isOccupied_Tile(x, y)) {
+                explored.add(Engine.tiles[y][x]);
+                open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
+            }else if(Engine.isEnemy_Tile(x,y,this))
+                explored.add(Engine.tiles[y][x]);
         }
         return explored;
     }
