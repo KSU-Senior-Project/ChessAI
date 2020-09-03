@@ -3,7 +3,7 @@ package Engine;
 
 /*This is the base class where most of the game logic will be handled */
 
-import Chess.Pieces.BasePiece;
+import Chess.Pieces.*;
 import Chess.Team.Team;
 import Chess.Tile.Tile;
 
@@ -58,7 +58,27 @@ public class Engine {
                     continue;
 
                 int current_team = y < tiles.length / 2 ? 0 : 1;
-                teams[current_team].addChess_Piece(new BasePiece(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+
+                switch (board[y][x]){
+                    case 5:
+                        teams[current_team].addChess_Piece(new Pawn(chess_pieces[current_team][board[y][x]],tiles[y][x],current_team == 0 ? 1 : -1));
+                        break;
+                    case 4:
+                        teams[current_team].addChess_Piece(new Rook(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        break;
+                    case 3:
+                        teams[current_team].addChess_Piece(new Knight(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        break;
+                    case 2:
+                        teams[current_team].addChess_Piece(new Bishop(chess_pieces[current_team][board[y][x]],tiles[y][x],current_team == 0 ? 1 : -1));
+                        break;
+                    case 1:
+                        teams[current_team].addChess_Piece(new King(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        break;
+                    case 0:
+                        teams[current_team].addChess_Piece(new Queen(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        break;
+                }
             }
         }
     }

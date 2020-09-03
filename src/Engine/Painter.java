@@ -10,7 +10,9 @@ import java.util.List;
 
 import Chess.Pieces.BasePiece;
 import Chess.Pieces.MoveableImage;
+import Chess.Team.Team;
 import Chess.Tile.Tile;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 
 /*Base Painter JPanel that will control underlying rendering*/
@@ -42,8 +44,8 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         }
 
         //Drawing Chess Pieces
-        for(int i = 0; i < Engine.teams.length;i++){
-            for(MoveableImage piece : Engine.teams[i].get_Chess_Pieces())
+        for(Team team : Engine.teams){
+            for(MoveableImage piece : team.get_Chess_Pieces())
                 piece.draw_Image(g,this);
         }
 
@@ -64,8 +66,9 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        mouseMoved(e);
         if(selected_piece == null) return;
-        
+
         if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]))
            mouseClicked(e);
         else
@@ -85,9 +88,7 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(selected_piece == null) return;
-        mouseMoved(e);
-        selected_piece.setMidpoint(e.getX(),e.getY());
+        if(selected_piece != null) selected_piece.setMidpoint(e.getX(),e.getY());
         repaint();
     }
 
