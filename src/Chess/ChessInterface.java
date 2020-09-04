@@ -1,3 +1,4 @@
+package Chess;
 
 import java.awt.Color;
 import java.awt.GridLayout;
