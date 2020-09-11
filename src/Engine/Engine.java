@@ -10,16 +10,19 @@ import Chess.Tile.Tile;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Objects;
 
 public class Engine {
     public static Tile[][] tiles;
     public static Team[] teams;
     public static int turn = -1;
+    private static int[][] board;
 
 
     public Engine(){
         //Creating teams
+    	System.out.println("creating teams");
         teams = new Team[2];
         teams[0] = new Team(Team.Controller.player);
         teams[1] = new Team(Team.Controller.bot);
@@ -28,18 +31,21 @@ public class Engine {
         Image[][] chess_pieces = null;
         try {
             chess_pieces = new Image[2][6];
-            BufferedImage chess_sprite = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("Chess.png")));
+            BufferedImage chess_sprite = ImageIO.read(new File("resources/Chess.png"));
+            //BufferedImage chess_sprite = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("resources/Chess.png")));
+            System.out.println("loaded resources");
             for(int y = 0; y < 2;y++){
                 for(int x = 0; x < 6;x++)
                     chess_pieces[y][x] = chess_sprite.getSubimage(x * 45,y * 45,45,45).getScaledInstance(GUI.square_size,GUI.square_size,Image.SCALE_SMOOTH);
             }
         }catch(Exception e){
+        	System.out.println("error loading images");
             System.out.println(e.toString());
         }
 
         //Creating Tile, Assigning correct chess piece to tile, assigning that chess piece to the correct team
         tiles = new Tile[8][8];
-        int[][] board = new int[][]{
+        board = new int[][]{
                 {4,3,2,0,1,2,3,4},
                 {5,5,5,5,5,5,5,5},
                 {-1,-1,-1,-1,-1,-1,-1,-1},
@@ -82,13 +88,9 @@ public class Engine {
             }
         }
     }
-
-
-
-
-
-
-
+    
+    
+    //do
     public static void player_move(){
         if(current_Turn().get_Player() != Team.Controller.player)
             return;
