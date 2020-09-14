@@ -20,6 +20,7 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     private BasePiece selected_piece;
     private List<Tile> selected_Tiles = new ArrayList<Tile>();
+    private List<Tile> capture_Tiles = new ArrayList<Tile>();
     private int relative_x;
     private int relative_y;
 
@@ -38,8 +39,15 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         for(Tile[] row : Engine.tiles){
             for(Tile tile : row){
                 //REDO OR REWRITE. ADDS SPACING IN TILES WHICH MAY NOT BE PLEASING TO SOME
+            	
                 g.setColor(selected_Tiles.contains(tile) ? Color.BLUE : tile.getBackground());
                 g.fillRect(tile.getAbsolute_x() + 1, tile.getAbsolute_y() + 1, tile.getSize() - 2, tile.getSize() - 2);
+                
+                
+                if(capture_Tiles.contains(tile)) {
+                	g.setColor(Color.RED);
+                    g.fillRect(tile.getAbsolute_x() + 1, tile.getAbsolute_y() + 1, tile.getSize() -2, tile.getSize() - 2);
+                }                
             }
         }
 
@@ -54,14 +62,17 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
-       mousePressed(e);
+       //mousePressed(e);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]))
+        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x])) {
             selected_piece.setCurrent_Tile(Engine.tiles[relative_y][relative_x]);
+        	ActionLog.appendAction("Selected " + selected_piece);
+        }
         setSelected_piece(Engine.tiles[relative_y][relative_x].getCurrent_piece());
+        
     }
 
     @Override
@@ -100,6 +111,8 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     public void setSelected_piece(BasePiece piece){
         this.selected_piece = piece;
-        this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Tiles();
+        this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Moves();
+        this.capture_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Captures();
+        //this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Tiles();
     }
 }

@@ -14,4 +14,14 @@ public class Knight extends BasePiece{
     public List<Tile> getAvailable_Tiles() {
         return this.getAvailable_Tiles(5);
     }
+
+	@Override
+	public List<Tile> getAvailable_Captures() {
+		return super.getAvailable_Captures(2);
+	}
+
+	@Override
+	public List<Tile> getAvailable_Moves() {
+		return this.getAvailable_Moves(5);
+	}
 }
