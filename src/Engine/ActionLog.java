@@ -23,6 +23,7 @@ public class ActionLog extends JPanel{
 	
 	public static void appendAction(String action) {
 		log.append("\n" + action);
+		log.setCaretPosition(log.getDocument().getLength());
 	}
 	
 	

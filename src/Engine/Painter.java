@@ -65,7 +65,7 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
-       //mousePressed(e);
+       mousePressed(e);
     }
 
     @Override
@@ -116,6 +116,5 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         this.selected_piece = piece;
         this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Moves();
         this.capture_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Captures();
-        //this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Tiles();
     }
 }
