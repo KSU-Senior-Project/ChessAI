@@ -37,7 +37,7 @@ public class Engine {
             System.out.println("loaded resources");
             for(int y = 0; y < 2;y++){
                 for(int x = 0; x < 6;x++)
-                    chess_pieces[y][x] = chess_sprite.getSubimage(x * 45,y * 45,45,45).getScaledInstance(GUI.square_size,GUI.square_size,Image.SCALE_SMOOTH);
+                    chess_pieces[y][x] = chess_sprite.getSubimage(x * 45,y * 45,45,45).getScaledInstance(GUI.SQUARE_SIZE,GUI.SQUARE_SIZE,Image.SCALE_SMOOTH);
             }
         }catch(Exception e){
         	System.out.println("error loading images");
@@ -62,7 +62,7 @@ public class Engine {
 
         for(int y = 0; y < 8;y++){
             for(int x = 0; x < 8; x++) {
-                tiles[y][x] = new Tile(x, y, GUI.square_size, (x + y) % 2 == 1 ? Color.BLACK : Color.WHITE);
+                tiles[y][x] = new Tile(x, y, GUI.SQUARE_SIZE, (x + y) % 2 == 1 ? Color.BLACK : Color.WHITE);
 
                 if(board[y][x] == -1)
                     continue;

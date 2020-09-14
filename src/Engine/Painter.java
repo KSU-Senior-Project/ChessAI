@@ -28,6 +28,9 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         //Setting defaults for JPanel
         addMouseMotionListener(this);
         addMouseListener(this);
+        this.setPreferredSize(new Dimension(GUI.SQUARE_SIZE * 8,GUI.SQUARE_SIZE * 8));
+        this.setMaximumSize(new Dimension(GUI.SQUARE_SIZE * 8,GUI.SQUARE_SIZE * 8));
+        this.setMinimumSize(new Dimension(GUI.SQUARE_SIZE * 8,GUI.SQUARE_SIZE * 8));
         this.setLayout(new GridLayout(8,8));
     }
 
@@ -105,8 +108,8 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        relative_x = e.getX() / GUI.square_size;
-        relative_y = e.getY() / GUI.square_size;
+        relative_x = e.getX() / GUI.SQUARE_SIZE;
+        relative_y = e.getY() / GUI.SQUARE_SIZE;
     }
 
     public void setSelected_piece(BasePiece piece){
