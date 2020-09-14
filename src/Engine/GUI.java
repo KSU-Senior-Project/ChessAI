@@ -14,30 +14,27 @@ public class GUI extends JFrame{
     public final int BOARD_WIDTH = 480;
     public final int SPACER_WIDTH = 100;
     public final int LOG_HEIGHT = 100;
+    public final int STATUS_HEIGHT = 40;
 
     public GUI(){
         super("Chess AI");
         this.setLayout(new BorderLayout());
         this.setBackground(Color.BLACK);
-        this.getContentPane().setPreferredSize(new Dimension(BOARD_WIDTH+200, BOARD_HEIGHT + LOG_HEIGHT));
+        this.getContentPane().setPreferredSize(new Dimension(BOARD_WIDTH+200, BOARD_HEIGHT + LOG_HEIGHT + STATUS_HEIGHT));
         
         new Engine();
 
-        //spacers for visual effect - could replace one with a button panel or something?
-        JPanel top_spacer = new JPanel();
-        top_spacer.setBackground(Color.BLACK);
-        top_spacer.setPreferredSize(new Dimension(BOARD_WIDTH + (SPACER_WIDTH*2), 10));
-        this.getContentPane().add(top_spacer, BorderLayout.NORTH);
+        //status panel to show whos turn - moves made - and a button to end turn
+        StatusPanel status = new StatusPanel(BOARD_WIDTH + (SPACER_WIDTH*2), STATUS_HEIGHT);        
+        this.getContentPane().add(status, BorderLayout.NORTH);
         
-        JPanel left_spacer = new JPanel();
-        left_spacer.setBackground(Color.BLACK);
-        left_spacer.setPreferredSize(new Dimension(SPACER_WIDTH, BOARD_HEIGHT));
-        this.getContentPane().add(left_spacer, BorderLayout.WEST);
         
-        JPanel right_spacer = new JPanel();
-        right_spacer.setBackground(Color.BLACK);
-        right_spacer.setPreferredSize(new Dimension(SPACER_WIDTH, BOARD_HEIGHT));
-        this.getContentPane().add(right_spacer, BorderLayout.EAST);
+        //capture panels to show total captures each player has made
+        CapturePanel player1caps = new CapturePanel(SPACER_WIDTH, BOARD_HEIGHT,1);
+        this.getContentPane().add(player1caps, BorderLayout.WEST);
+        
+        CapturePanel player2caps = new CapturePanel(SPACER_WIDTH, BOARD_HEIGHT,2);
+        this.getContentPane().add(player2caps, BorderLayout.EAST);
         
         //painter for the board
         painter = new Painter();

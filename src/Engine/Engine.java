@@ -17,6 +17,7 @@ public class Engine {
     public static Tile[][] tiles;
     public static Team[] teams;
     public static int turn = -1;
+    public static int move = 0;
     private static int[][] board;
 
 
@@ -45,6 +46,9 @@ public class Engine {
 
         //Creating Tile, Assigning correct chess piece to tile, assigning that chess piece to the correct team
         tiles = new Tile[8][8];
+        
+        
+        //possible create different numbers for black/white same peice
         board = new int[][]{
                 {4,3,2,0,1,2,3,4},
                 {5,5,5,5,5,5,5,5},
@@ -67,7 +71,8 @@ public class Engine {
 
                 switch (board[y][x]){
                     case 5:
-                        teams[current_team].addChess_Piece(new Pawn(chess_pieces[current_team][board[y][x]],tiles[y][x],current_team == 0 ? 1 : -1));
+                        teams[current_team].addChess_Piece(new Pawn(chess_pieces[current_team][board[y][x]],tiles[y][x],
+                        		current_team == 0 ? BasePiece.DIRECTION_UP : BasePiece.DIRECTION_DOWN));
                         break;
                     case 4:
                         teams[current_team].addChess_Piece(new Rook(chess_pieces[current_team][board[y][x]],tiles[y][x]));
@@ -76,7 +81,8 @@ public class Engine {
                         teams[current_team].addChess_Piece(new Knight(chess_pieces[current_team][board[y][x]],tiles[y][x]));
                         break;
                     case 2:
-                        teams[current_team].addChess_Piece(new Bishop(chess_pieces[current_team][board[y][x]],tiles[y][x],current_team == 0 ? 1 : -1));
+                        teams[current_team].addChess_Piece(new Bishop(chess_pieces[current_team][board[y][x]],tiles[y][x],
+                        		current_team == 0 ? BasePiece.DIRECTION_UP : BasePiece.DIRECTION_DOWN));
                         break;
                     case 1:
                         teams[current_team].addChess_Piece(new King(chess_pieces[current_team][board[y][x]],tiles[y][x]));
