@@ -23,9 +23,9 @@ public class StatusPanel extends JPanel {
 		moveLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 10));
 		moveLabel.setForeground(Color.WHITE);
 		endTurnButton = new JButton("End Turn");
-		endTurnButton.setBackground(Color.BLACK);
-		endTurnButton.setForeground(Color.WHITE);
-		endTurnButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 10));
+		endTurnButton.setBackground(Color.WHITE);
+		endTurnButton.setForeground(Color.BLACK);
+		endTurnButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		
 		add(turnLabel);
 		add(moveLabel);
