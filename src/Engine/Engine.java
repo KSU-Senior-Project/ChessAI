@@ -110,12 +110,12 @@ public class Engine {
     public static boolean make_move(BasePiece selected_piece,Tile move_to_tile){
         if(move_to_tile.getCurrent_piece() == null){
             selected_piece.setCurrent_Tile(move_to_tile);
-            ActionLog.appendAction(String.format("Moving %s to %s%s",selected_piece.getName(),(char)('A' + move_to_tile.getRelative_y()),move_to_tile.getRelative_x() + 1));
+            ActionLog.appendAction(String.format("Moving %s to %s",selected_piece.getName(),move_to_tile.getName()));
         }else if(move_to_tile.getCurrent_piece().getCurrent_Team() != selected_piece.getCurrent_Team()){
             move_to_tile.getCurrent_piece().getCurrent_Team().get_Chess_Pieces().remove(move_to_tile.getCurrent_piece());
             GUI.capturePanels[teams[0] == selected_piece.getCurrent_Team() ? 0 : 1].addCapture(move_to_tile.getCurrent_piece().getImage());
             selected_piece.setCurrent_Tile(move_to_tile);
-            ActionLog.appendAction(String.format("Capturing %s on %s%s",move_to_tile.getCurrent_piece().getName(),(char)('A' + move_to_tile.getRelative_y()),move_to_tile.getRelative_x() + 1));
+            ActionLog.appendAction(String.format("Capturing %s on %s",move_to_tile.getCurrent_piece().getName(),move_to_tile.getName()));
         }
         return true;
     }
