@@ -18,10 +18,13 @@ public class StatusPanel extends JPanel {
 		setBackground(Color.BLACK);
 		turnLabel = new JLabel("Player 1's Turn", SwingConstants.CENTER);
 		turnLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 10));
+		turnLabel.setForeground(Color.WHITE);
 		moveLabel = new JLabel("Moves: 0", SwingConstants.CENTER);	
 		moveLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 10));
+		moveLabel.setForeground(Color.WHITE);
 		endTurnButton = new JButton("End Turn");
 		endTurnButton.setBackground(Color.BLACK);
+		endTurnButton.setForeground(Color.WHITE);
 		endTurnButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 10));
 		
 		add(turnLabel);

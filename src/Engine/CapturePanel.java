@@ -12,6 +12,7 @@ public class CapturePanel extends JPanel {
 		setPreferredSize(new Dimension(w, h));
 		setBackground(Color.BLACK);
 		playerLabel = new JLabel("P" + player + "'s captures", SwingConstants.CENTER);
+		playerLabel.setForeground(Color.WHITE);
 		add(playerLabel, BorderLayout.NORTH);
 	}
 	
