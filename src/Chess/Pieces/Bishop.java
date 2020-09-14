@@ -10,7 +10,7 @@ public class Bishop extends BasePiece{
 	private int direction;
 	
     public Bishop(Image image, Tile current_Tile, int direction) {
-        super(image, current_Tile);
+        super(image, current_Tile,"Bishop");
         this.direction = direction;
     }
     

@@ -29,8 +29,6 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         addMouseMotionListener(this);
         addMouseListener(this);
         this.setPreferredSize(new Dimension(GUI.SQUARE_SIZE * 8,GUI.SQUARE_SIZE * 8));
-        this.setMaximumSize(new Dimension(GUI.SQUARE_SIZE * 8,GUI.SQUARE_SIZE * 8));
-        this.setMinimumSize(new Dimension(GUI.SQUARE_SIZE * 8,GUI.SQUARE_SIZE * 8));
         this.setLayout(new GridLayout(8,8));
     }
 
@@ -70,12 +68,10 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x])) {
-            selected_piece.setCurrent_Tile(Engine.tiles[relative_y][relative_x]);
-        	ActionLog.appendAction("Selected " + selected_piece);
+        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]) || capture_Tiles.contains(Engine.tiles[relative_y][relative_x])) {
+            Engine.make_move(selected_piece,Engine.tiles[relative_y][relative_x]);
         }
         setSelected_piece(Engine.tiles[relative_y][relative_x].getCurrent_piece());
-        
     }
 
     @Override
@@ -83,7 +79,7 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         mouseMoved(e);
         if(selected_piece == null) return;
 
-        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]))
+        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]) || capture_Tiles.contains(Engine.tiles[relative_y][relative_x]))
            mouseClicked(e);
         else
             selected_piece.setCurrent_Tile(selected_piece.getCurrent_Tile());

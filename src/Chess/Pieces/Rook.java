@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Rook extends BasePiece{
     public Rook(Image image, Tile current_Tile) {
-        super(image, current_Tile);
+        super(image, current_Tile,"Rook");
     }
 
     @Override

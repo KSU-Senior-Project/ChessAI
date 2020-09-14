@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Knight extends BasePiece{
     public Knight(Image image, Tile current_Tile) {
-        super(image, current_Tile);
+        super(image, current_Tile,"Knight");
     }
 
     @Override

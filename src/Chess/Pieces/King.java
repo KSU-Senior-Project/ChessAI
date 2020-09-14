@@ -8,7 +8,7 @@ import java.util.List;
 public class King extends BasePiece {
 
     public King(Image image, Tile current_Tile) {
-        super(image, current_Tile);
+        super(image, current_Tile,"King");
     }
 
     @Override

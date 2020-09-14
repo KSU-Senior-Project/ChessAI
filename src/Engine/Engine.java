@@ -8,6 +8,7 @@ import Chess.Team.Team;
 import Chess.Tile.Tile;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -105,6 +106,20 @@ public class Engine {
         if(current_Turn().get_Player() != Team.Controller.bot)
             return;
     }
+
+    public static boolean make_move(BasePiece selected_piece,Tile move_to_tile){
+        if(move_to_tile.getCurrent_piece() == null){
+            selected_piece.setCurrent_Tile(move_to_tile);
+            ActionLog.appendAction(String.format("Moving %s to %s%s",selected_piece.getName(),(char)('A' + move_to_tile.getRelative_y()),move_to_tile.getRelative_x() + 1));
+        }else if(move_to_tile.getCurrent_piece().getCurrent_Team() != selected_piece.getCurrent_Team()){
+            move_to_tile.getCurrent_piece().getCurrent_Team().get_Chess_Pieces().remove(move_to_tile.getCurrent_piece());
+            GUI.capturePanels[teams[0] == selected_piece.getCurrent_Team() ? 0 : 1].addCapture(move_to_tile.getCurrent_piece().getImage());
+            selected_piece.setCurrent_Tile(move_to_tile);
+            ActionLog.appendAction(String.format("Capturing %s on %s%s",move_to_tile.getCurrent_piece().getName(),(char)('A' + move_to_tile.getRelative_y()),move_to_tile.getRelative_x() + 1));
+        }
+        return true;
+    }
+
 
 
     public static boolean isEnemy_Tile(int x,int y,BasePiece piece){

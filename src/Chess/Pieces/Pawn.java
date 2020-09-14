@@ -12,7 +12,7 @@ public class Pawn extends BasePiece {
     private boolean hasMoved;
 
     public Pawn(Image image, Tile current_Tile,int direction) {
-        super(image, current_Tile);
+        super(image, current_Tile,"Pawn");
         setDirection(direction);
         hasMoved = false;
     }
