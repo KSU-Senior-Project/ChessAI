@@ -26,7 +26,9 @@ public class Tile {
         setBackground(Background);
     }
 
-
+    public String getName(){
+        return "" + (char)('A' + getRelative_y()) + (getRelative_x() + 1);
+    }
     public int getRelative_x() {
         return relative_x;
     }

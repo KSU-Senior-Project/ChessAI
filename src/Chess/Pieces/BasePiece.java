@@ -15,11 +15,15 @@ public abstract class BasePiece extends MoveableImage{
     private Tile current_Tile;
     public static int DIRECTION_UP = -1;
     public static int DIRECTION_DOWN = 0;
+    public String Name;
+    public int ID;
 
-    public BasePiece(Image image, Tile current_Tile) {
+    public BasePiece(Image image, Tile current_Tile,String Name,int ID) {
         super(image, current_Tile.getAbsolute_x(), current_Tile.getRelative_y());
         setCurrent_Tile(current_Tile);
         getCurrent_Tile().setCurrent_piece(this);
+        setName(Name);
+        setID(ID);
     }
 
     public Tile getCurrent_Tile() {
@@ -27,13 +31,28 @@ public abstract class BasePiece extends MoveableImage{
     }
 
     public void setCurrent_Tile(Tile current_Tile) {
-        //REDO OR REWRITE CALLS
         if(this.current_Tile != null)
             this.current_Tile.setCurrent_piece(null);
         this.current_Tile = current_Tile;
             current_Tile.setCurrent_piece(this);
         this.setX(current_Tile.getAbsolute_x());
         this.setY(current_Tile.getAbsolute_y());
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 
     public Team getCurrent_Team() {
@@ -43,7 +62,6 @@ public abstract class BasePiece extends MoveableImage{
     public void setCurrent_Team(Team current_Team) {
         this.current_Team = current_Team;
     }
-
 
     private class TileDistance{
         public int distance;

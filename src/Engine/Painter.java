@@ -28,6 +28,7 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         //Setting defaults for JPanel
         addMouseMotionListener(this);
         addMouseListener(this);
+        this.setPreferredSize(new Dimension(GUI.SQUARE_SIZE * 8,GUI.SQUARE_SIZE * 8));
         this.setLayout(new GridLayout(8,8));
     }
 
@@ -62,17 +63,15 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
-       //mousePressed(e);
+       mousePressed(e);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x])) {
-            selected_piece.setCurrent_Tile(Engine.tiles[relative_y][relative_x]);
-        	ActionLog.appendAction("Selected " + selected_piece);
+        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]) || capture_Tiles.contains(Engine.tiles[relative_y][relative_x])) {
+            Engine.make_move(selected_piece,Engine.tiles[relative_y][relative_x]);
         }
         setSelected_piece(Engine.tiles[relative_y][relative_x].getCurrent_piece());
-        
     }
 
     @Override
@@ -80,7 +79,7 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
         mouseMoved(e);
         if(selected_piece == null) return;
 
-        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]))
+        if(selected_Tiles.contains(Engine.tiles[relative_y][relative_x]) || capture_Tiles.contains(Engine.tiles[relative_y][relative_x]))
            mouseClicked(e);
         else
             selected_piece.setCurrent_Tile(selected_piece.getCurrent_Tile());
@@ -105,14 +104,13 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        relative_x = e.getX() / GUI.square_size;
-        relative_y = e.getY() / GUI.square_size;
+        relative_x = e.getX() / GUI.SQUARE_SIZE;
+        relative_y = e.getY() / GUI.SQUARE_SIZE;
     }
 
     public void setSelected_piece(BasePiece piece){
         this.selected_piece = piece;
         this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Moves();
         this.capture_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Captures();
-        //this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Tiles();
     }
 }
