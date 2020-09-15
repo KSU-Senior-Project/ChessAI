@@ -11,8 +11,8 @@ public class Pawn extends BasePiece {
     private int direction;
     private boolean hasMoved;
 
-    public Pawn(Image image, Tile current_Tile,int direction) {
-        super(image, current_Tile,"Pawn");
+    public Pawn(Image image, Tile current_Tile,int direction,int ID) {
+        super(image, current_Tile,"Pawn",ID);
         setDirection(direction);
         hasMoved = false;
     }

@@ -9,8 +9,8 @@ import java.util.List;
 public class Bishop extends BasePiece{
 	private int direction;
 	
-    public Bishop(Image image, Tile current_Tile, int direction) {
-        super(image, current_Tile,"Bishop");
+    public Bishop(Image image, Tile current_Tile, int direction,int ID) {
+        super(image, current_Tile,"Bishop",ID);
         this.direction = direction;
     }
     

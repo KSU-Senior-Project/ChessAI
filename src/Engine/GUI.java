@@ -74,7 +74,6 @@ public class GUI extends JFrame{
         this.getContentPane().add(full_board, BorderLayout.CENTER);
 
         this.setVisible(true);
-        this.setLocationRelativeTo(null);
         this.requestFocus();
         painter.repaint();
         
@@ -83,7 +82,7 @@ public class GUI extends JFrame{
         this.getContentPane().add(log, BorderLayout.SOUTH);
         
         this.pack();
-        
+        this.setLocationRelativeTo(null);
         
         
     }

@@ -6,6 +6,7 @@ package Engine;
 import Chess.Pieces.*;
 import Chess.Team.Team;
 import Chess.Tile.Tile;
+import Combat.CombatGUI;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,8 +22,21 @@ public class Engine {
     public static int move = 0;
     private static int[][] board;
 
+    public static int[][][] combat_stats;
+
+    public static Image[] dice;
+
 
     public Engine(){
+        combat_stats = new int[][][]{
+                /*Queen*/ {{6,5,4},{6,5,4},{6,5,4},{6,5,4},{6,5},{6,5,4,3,2}},
+                /*King*/ {{6,5,4},{6,5,4},{6,5,4},{6,5,4},{6,5},{}},
+                /*Bishop*/{{6,5},{6,5},{6,5,4},{6,5},{6,5},{6,5,4,3}},
+                /*Knight*/{{6},{6},{6,5,4},{6,5,4},{6,5},{6,5,4,3,2}},
+                /*Rook*/{{6,5,4},{6,5,4},{6,5},{6,5},{6},{6,5}},
+                /*Pawn*/{{6},{6},{6,5},{6},{6},{6,5,4}},
+        };
+
         //Creating teams
     	System.out.println("creating teams");
         teams = new Team[2];
@@ -34,11 +48,14 @@ public class Engine {
         try {
             chess_pieces = new Image[2][6];
             BufferedImage chess_sprite = ImageIO.read(new File("resources/Chess.png"));
-            //BufferedImage chess_sprite = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("resources/Chess.png")));
             System.out.println("loaded resources");
             for(int y = 0; y < 2;y++){
                 for(int x = 0; x < 6;x++)
                     chess_pieces[y][x] = chess_sprite.getSubimage(x * 45,y * 45,45,45).getScaledInstance(GUI.SQUARE_SIZE,GUI.SQUARE_SIZE,Image.SCALE_SMOOTH);
+            }
+            dice = new Image[6];
+            for(int x = 0; x < 6; x++){
+                dice[x] = chess_sprite.getSubimage(x * 45,90,45,45).getScaledInstance(GUI.SQUARE_SIZE,GUI.SQUARE_SIZE,Image.SCALE_SMOOTH);
             }
         }catch(Exception e){
         	System.out.println("error loading images");
@@ -73,23 +90,23 @@ public class Engine {
                 switch (board[y][x]){
                     case 5:
                         teams[current_team].addChess_Piece(new Pawn(chess_pieces[current_team][board[y][x]],tiles[y][x],
-                        		current_team == 0 ? BasePiece.DIRECTION_UP : BasePiece.DIRECTION_DOWN));
+                        		current_team == 0 ? BasePiece.DIRECTION_UP : BasePiece.DIRECTION_DOWN,board[y][x]));
                         break;
                     case 4:
-                        teams[current_team].addChess_Piece(new Rook(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        teams[current_team].addChess_Piece(new Rook(chess_pieces[current_team][board[y][x]],tiles[y][x],board[y][x]));
                         break;
                     case 3:
-                        teams[current_team].addChess_Piece(new Knight(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        teams[current_team].addChess_Piece(new Knight(chess_pieces[current_team][board[y][x]],tiles[y][x],board[y][x]));
                         break;
                     case 2:
                         teams[current_team].addChess_Piece(new Bishop(chess_pieces[current_team][board[y][x]],tiles[y][x],
-                        		current_team == 0 ? BasePiece.DIRECTION_UP : BasePiece.DIRECTION_DOWN));
+                        		current_team == 0 ? BasePiece.DIRECTION_UP : BasePiece.DIRECTION_DOWN,board[y][x]));
                         break;
                     case 1:
-                        teams[current_team].addChess_Piece(new King(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        teams[current_team].addChess_Piece(new King(chess_pieces[current_team][board[y][x]],tiles[y][x],board[y][x]));
                         break;
                     case 0:
-                        teams[current_team].addChess_Piece(new Queen(chess_pieces[current_team][board[y][x]],tiles[y][x]));
+                        teams[current_team].addChess_Piece(new Queen(chess_pieces[current_team][board[y][x]],tiles[y][x],board[y][x]));
                         break;
                 }
             }
@@ -112,7 +129,7 @@ public class Engine {
             selected_piece.setCurrent_Tile(move_to_tile);
             ActionLog.appendAction(String.format("Moving %s to %s",selected_piece.getName(),move_to_tile.getName()));
         }else if(move_to_tile.getCurrent_piece().getCurrent_Team() != selected_piece.getCurrent_Team()){
-            move_to_tile.getCurrent_piece().getCurrent_Team().get_Chess_Pieces().remove(move_to_tile.getCurrent_piece());
+            new CombatGUI(selected_piece,move_to_tile.getCurrent_piece());
             GUI.capturePanels[teams[0] == selected_piece.getCurrent_Team() ? 0 : 1].addCapture(move_to_tile.getCurrent_piece().getImage());
             selected_piece.setCurrent_Tile(move_to_tile);
             ActionLog.appendAction(String.format("Capturing %s on %s",move_to_tile.getCurrent_piece().getName(),move_to_tile.getName()));
@@ -121,6 +138,9 @@ public class Engine {
     }
 
 
+    public static int[] get_Rolls(int y,int x){
+        return combat_stats[y][x];
+    }
 
     public static boolean isEnemy_Tile(int x,int y,BasePiece piece){
         return isOccupied_Tile(x,y) && tiles[y][x].getCurrent_piece().getCurrent_Team() != piece.getCurrent_Team();
