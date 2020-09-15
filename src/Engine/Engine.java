@@ -7,6 +7,7 @@ import Chess.Pieces.*;
 import Chess.Team.Team;
 import Chess.Tile.Tile;
 import Combat.CombatGUI;
+import Dice.Dice;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -24,7 +25,7 @@ public class Engine {
 
     public static int[][][] combat_stats;
 
-    public static Image[] dice;
+    public static Dice[] dice;
 
 
     public Engine(){
@@ -53,9 +54,9 @@ public class Engine {
                 for(int x = 0; x < 6;x++)
                     chess_pieces[y][x] = chess_sprite.getSubimage(x * 45,y * 45,45,45).getScaledInstance(GUI.SQUARE_SIZE,GUI.SQUARE_SIZE,Image.SCALE_SMOOTH);
             }
-            dice = new Image[6];
+            dice = new Dice[6];
             for(int x = 0; x < 6; x++){
-                dice[x] = chess_sprite.getSubimage(x * 45,90,45,45).getScaledInstance(GUI.SQUARE_SIZE,GUI.SQUARE_SIZE,Image.SCALE_SMOOTH);
+                dice[x] = new Dice(x + 1,chess_sprite.getSubimage(x * 45,90,45,45).getScaledInstance(GUI.SQUARE_SIZE,GUI.SQUARE_SIZE,Image.SCALE_SMOOTH));
             }
         }catch(Exception e){
         	System.out.println("error loading images");

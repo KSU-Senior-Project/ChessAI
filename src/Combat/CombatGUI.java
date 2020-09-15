@@ -1,6 +1,7 @@
 package Combat;
 
 import Chess.Pieces.BasePiece;
+import Dice.Dice;
 import Engine.Engine;
 
 import javax.swing.*;
@@ -16,9 +17,12 @@ public class CombatGUI extends JFrame {
     private BasePiece piece_two;
     private int[] combat_stats;
     private JPanel dicePanel;
-
+    private int roll_count;
+    private int current_roll;
     private Random random;
+    private Dice currentDice;
 
+    /*REDO OR REWRITE WHOLE CLASS, I WROTE IT POORLY*/
 
     public CombatGUI(BasePiece piece_one,BasePiece piece_two){
         setPiece_one(piece_one);
@@ -36,14 +40,13 @@ public class CombatGUI extends JFrame {
         this.setVisible(true);
 
 
-
         dicePanel = new JPanel();
         this.getContentPane().add(dicePanel,BorderLayout.CENTER);
-        dicePanel.setLayout(new GridLayout(1,2));
-        for(int i = 0; i < 2;i++)
-            dicePanel.add(new JLabel(new ImageIcon(Engine.dice[i])),BorderLayout.CENTER);
+        dicePanel.setLayout(new GridLayout(1,1));
+        dicePanel.add(new JLabel(new ImageIcon(getRandom_Dice().getImage())));
 
         JLabel stats_needed = new JLabel(String.format("Dice Rolls Needed: "),SwingConstants.CENTER);
+        stats_needed.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         for(int i : combat_stats)
             stats_needed.setText(stats_needed.getText() + " " + i);
 
@@ -51,36 +54,46 @@ public class CombatGUI extends JFrame {
 
         JPanel options = new JPanel();
         JButton roll = new JButton("Roll");
+
         roll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for(int i = 0; i < random.nextInt(5) + 10;i++){
-                    long start = System.currentTimeMillis();
-                    dicePanel.invalidate();
-                    dicePanel.removeAll();
-
-                    for(int x = 0; x < 2;x++)
-                        dicePanel.add(new JLabel(new ImageIcon(getRandom_Dice())));
-
-                    dicePanel.revalidate();
-                    while(start + 200 > System.currentTimeMillis()){
-                        System.out.println(System.currentTimeMillis());
-                    }
-                }
+                roll_count = random.nextInt(5) + 5;
+                current_roll = 0;
+                randomize_roll.start();
             }
         });
         roll.setSize(new Dimension(100,50));
         options.add(roll);
 
         JButton leave = new JButton("Leave");
+        leave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
         leave.setSize(new Dimension(100,50));
         options.add(leave);
         this.getContentPane().add(options,BorderLayout.SOUTH);
     }
 
+    public ActionListener update_dice = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(current_roll++ > roll_count)
+                randomize_roll.stop();
+            dicePanel.invalidate();
+            dicePanel.removeAll();
+            dicePanel.add(new JLabel(new ImageIcon(getRandom_Dice().getImage())));
+            dicePanel.revalidate();
+        }
+    };
+    private Timer randomize_roll = new Timer(200,update_dice);
 
-    public Image getRandom_Dice(){
-        return Engine.dice[random.nextInt(6)];
+    public Dice getRandom_Dice(){
+        this.currentDice = Engine.dice[random.nextInt(6)];
+        return currentDice;
     }
 
     public BasePiece getPiece_one() {

@@ -92,9 +92,10 @@ public abstract class BasePiece extends MoveableImage{
 
             if(!Engine.inBounds(x,y) || explored.contains(Engine.tiles[y][x]))
                 continue;
+            if(!Engine.isOccupied_Tile(x,y))
+                open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
             if(Engine.isEnemy_Tile(x,y,this)) {
                 explored.add(Engine.tiles[y][x]);
-                open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
             }
             
         }
