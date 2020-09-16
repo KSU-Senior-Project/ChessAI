@@ -110,7 +110,9 @@ public class Painter extends JPanel implements MouseMotionListener, MouseListene
 
     public void setSelected_piece(BasePiece piece){
         this.selected_piece = piece;
-        this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Moves();
-        this.capture_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_Captures();
+        if(this.selected_piece != null)
+            selected_piece.update_movement();
+        this.selected_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_movements();
+        this.capture_Tiles = piece == null ? new ArrayList<Tile>() : selected_piece.getAvailable_captures();
     }
 }
