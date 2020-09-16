@@ -22,9 +22,7 @@ public class Engine {
     public static int turn = -1;
     public static int move = 0;
     private static int[][] board;
-
     public static int[][][] combat_stats;
-
     public static Dice[] dice;
 
 
@@ -127,12 +125,12 @@ public class Engine {
 
     public static boolean make_move(BasePiece selected_piece,Tile move_to_tile){
         if(move_to_tile.getCurrent_piece() == null){
-            selected_piece.setCurrent_Tile(move_to_tile);
+            selected_piece.move(move_to_tile);
             ActionLog.appendAction(String.format("Moving %s to %s",selected_piece.getName(),move_to_tile.getName()));
         }else if(move_to_tile.getCurrent_piece().getCurrent_Team() != selected_piece.getCurrent_Team()){
-            new CombatGUI(selected_piece,move_to_tile.getCurrent_piece());
+            CombatGUI gui = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece());
             GUI.capturePanels[teams[0] == selected_piece.getCurrent_Team() ? 0 : 1].addCapture(move_to_tile.getCurrent_piece().getImage());
-            selected_piece.setCurrent_Tile(move_to_tile);
+            selected_piece.move(move_to_tile);
             ActionLog.appendAction(String.format("Capturing %s on %s",move_to_tile.getCurrent_piece().getName(),move_to_tile.getName()));
         }
         return true;

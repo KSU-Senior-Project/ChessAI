@@ -8,20 +8,6 @@ import java.util.List;
 public class Queen extends BasePiece {
     public Queen(Image image, Tile current_Tile,int ID) {
         super(image, current_Tile,"Queen",ID);
+        this.movement_distance = 3;
     }
-
-    @Override
-    public List<Tile> getAvailable_Tiles() {
-        return this.getAvailable_Tiles(3);
-    }
-
-	@Override
-	public List<Tile> getAvailable_Moves() {
-		return this.getAvailable_Moves(3);
-	}
-
-	@Override
-	public List<Tile> getAvailable_Captures() {
-		return super.getAvailable_Captures(2);
-	}
 }

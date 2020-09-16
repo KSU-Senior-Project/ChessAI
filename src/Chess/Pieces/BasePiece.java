@@ -7,8 +7,6 @@ import Engine.Engine;
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public abstract class BasePiece extends MoveableImage{
     private Team current_Team;
@@ -17,13 +15,17 @@ public abstract class BasePiece extends MoveableImage{
     public static int DIRECTION_DOWN = 0;
     public String Name;
     public int ID;
+    public List<Tile> available_movements = new ArrayList<Tile>();
+    public List<Tile> available_captures = new ArrayList<Tile>();
+    public int movement_distance = 1;
+    public int attack_distance = 1;
+
 
     public BasePiece(Image image, Tile current_Tile,String Name,int ID) {
         super(image, current_Tile.getAbsolute_x(), current_Tile.getRelative_y());
-        setCurrent_Tile(current_Tile);
-        getCurrent_Tile().setCurrent_piece(this);
         setName(Name);
         setID(ID);
+        setCurrent_Tile(current_Tile);
     }
 
     public Tile getCurrent_Tile() {
@@ -74,94 +76,48 @@ public abstract class BasePiece extends MoveableImage{
             this.tile = tile;
         }
     }
-    
-    protected List<Tile> getAvailable_Captures(int distance){
-    	List<Tile> explored = new ArrayList<Tile>();
-        List<TileDistance> open = new ArrayList<TileDistance>();
+
+    public void move(Tile tile){
+        setCurrent_Tile(tile);
+        update_movement();
+    }
+    public void update_movement(){
+        available_captures = new ArrayList<>();
+        available_movements = new ArrayList<>();
+        List<TileDistance> open = new ArrayList<>();
+
         for(int y = -1;y < 2;y++){
             for(int x = -1;x < 2;x++)
                 open.add(new TileDistance(getCurrent_Tile(),new Point(x,y),0));
         }
 
-        while(open.size() > 0) {
+        while(open.size() > 0){
             TileDistance current = open.remove(0);
             int x = current.direction.x + current.tile.getRelative_x();
             int y = current.direction.y + current.tile.getRelative_y();
-            if(current.distance + 1 > distance)
+
+            if(!Engine.inBounds(x,y) || available_captures.contains(Engine.tiles[y][x]) || available_movements.contains(Engine.tiles[y][x]))
                 continue;
 
-            if(!Engine.inBounds(x,y) || explored.contains(Engine.tiles[y][x]))
-                continue;
-            if(!Engine.isOccupied_Tile(x,y))
+            if(current.distance + 1 < Math.max(movement_distance,attack_distance) && !Engine.isOccupied_Tile(x,y))
                 open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
-            if(Engine.isEnemy_Tile(x,y,this)) {
-                explored.add(Engine.tiles[y][x]);
-            }
-            
+            if(can_move_to_tile(x,y,current.distance + 1))
+                available_movements.add(Engine.tiles[y][x]);
+            if(can_capture_tile(x,y,current.distance + 1))
+                available_captures.add(Engine.tiles[y][x]);
         }
-        return explored;
     }
-    
-    protected List<Tile> getAvailable_Moves(int distance){
-    	//REDO OR REWRITE
-        List<Tile> explored = new ArrayList<Tile>();
-        List<TileDistance> open = new ArrayList<TileDistance>();
-        for(int y = -1;y < 2;y++){
-            for(int x = -1;x < 2;x++)
-                open.add(new TileDistance(getCurrent_Tile(),new Point(x,y),0));
-        }
-
-        while(open.size() > 0) {
-            TileDistance current = open.remove(0);
-            int x = current.direction.x + current.tile.getRelative_x();
-            int y = current.direction.y + current.tile.getRelative_y();
-            if(current.distance + 1 > distance)
-                continue;
-
-            if(!Engine.inBounds(x,y) || explored.contains(Engine.tiles[y][x]))
-                continue;
-            if (!Engine.isOccupied_Tile(x, y)) {
-                explored.add(Engine.tiles[y][x]);
-                open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
-            }
-            //ignore enemy tiles for movement
-            else if(Engine.isEnemy_Tile(x,y,this)) {}
-                //explored.add(Engine.tiles[y][x]);
-        }
-        return explored;
+    public boolean can_move_to_tile(int x,int y,int distance){
+        return distance <= movement_distance && !Engine.isOccupied_Tile(x,y);
     }
-    
-    
-    protected List<Tile> getAvailable_Tiles(int distance){
-        //REDO OR REWRITE
-        List<Tile> explored = new ArrayList<Tile>();
-        List<TileDistance> open = new ArrayList<TileDistance>();
-        for(int y = -1;y < 2;y++){
-            for(int x = -1;x < 2;x++)
-                open.add(new TileDistance(getCurrent_Tile(),new Point(x,y),0));
-        }
-
-        while(open.size() > 0) {
-            TileDistance current = open.remove(0);
-            int x = current.direction.x + current.tile.getRelative_x();
-            int y = current.direction.y + current.tile.getRelative_y();
-            if(current.distance + 1 > distance)
-                continue;
-
-            if(!Engine.inBounds(x,y) || explored.contains(Engine.tiles[y][x]))
-                continue;
-            if (!Engine.isOccupied_Tile(x, y)) {
-                explored.add(Engine.tiles[y][x]);
-                open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
-            }else if(Engine.isEnemy_Tile(x,y,this))
-                explored.add(Engine.tiles[y][x]);
-        }
-        return explored;
+    public boolean can_capture_tile(int x,int y,int distance){
+        return distance <= Math.max(attack_distance,movement_distance) && Engine.isEnemy_Tile(x,y,this);
     }
-    
-    public abstract List<Tile> getAvailable_Captures();
-    
-    public abstract List<Tile> getAvailable_Moves();
 
-    public abstract List<Tile> getAvailable_Tiles();
+    public List<Tile> getAvailable_movements(){
+        return this.available_movements;
+    }
+    public List<Tile> getAvailable_captures(){
+        return this.available_captures;
+    }
 }
