@@ -37,6 +37,7 @@ public class CombatGUI extends JFrame {
     /*REDO OR REWRITE WHOLE CLASS, I WROTE IT POORLY*/
 
     public CombatGUI(BasePiece piece_one,BasePiece piece_two,int diceModifier){
+        this.diceModifier = diceModifier;
         state = CombatState.running;
         setPiece_one(piece_one);
         setPiece_two(piece_two);
@@ -107,7 +108,7 @@ public class CombatGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if(current_roll++ > roll_count) {
                 randomize_roll.stop();
-                System.out.println(currentDice.getNumber());
+                System.out.println(currentDice.getNumber() + diceModifier);
                 if(currentDice.getNumber() + diceModifier >= combat_stats[combat_stats.length - 1]){
                     results.setText("WON!");
                     state = CombatState.won;
