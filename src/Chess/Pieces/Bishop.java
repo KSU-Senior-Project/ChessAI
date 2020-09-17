@@ -13,7 +13,13 @@ public class Bishop extends BasePiece{
     public Bishop(Image image, Tile current_Tile, int direction,int ID) {
         super(image, current_Tile,"Bishop",ID);
         this.direction = direction;
-        this.attack_distance = 2;
+        this.movement_distance = 2;
+    }
+    @Override
+    public void move(Tile tile){
+        movement_distance = 1;
+        setCurrent_Tile(tile);
+        update_movement();
     }
 
     @Override

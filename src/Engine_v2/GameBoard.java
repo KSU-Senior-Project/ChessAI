@@ -115,7 +115,13 @@ public class GameBoard extends JPanel implements MouseMotionListener, MouseListe
         this.selectedPiece = piece;
         if(selectedPiece != null)
             selectedPiece.update_movement();
-        availableCaptures = selectedPiece == null ? new ArrayList<>() : selectedPiece.getAvailable_captures();
-        availableMovements = selectedPiece == null ? new ArrayList<>() : selectedPiece.getAvailable_movements();
+        setAvailableCaptures(selectedPiece == null || Engine.move_count >= 3 ? new ArrayList<>() : selectedPiece.getAvailable_captures());
+        setAvailableMovements(selectedPiece == null || Engine.move_count >= 3 ? new ArrayList<>() : selectedPiece.getAvailable_movements());
+    }
+    public void setAvailableMovements(List<Tile> list){
+        availableMovements = list;
+    }
+    public void setAvailableCaptures(List<Tile> list){
+        availableCaptures = list;
     }
 }

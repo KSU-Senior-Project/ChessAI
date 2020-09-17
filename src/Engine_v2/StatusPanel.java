@@ -32,4 +32,5 @@ public class StatusPanel extends JPanel {
 	public void updateMove_Count(int count){
 		moveLabel.setText(String.format("Moves: %s",count));
 	}
+	public void updatePlayer_Turn(int player){turnLabel.setText(String.format("Player %s's Turn",player));}
 }

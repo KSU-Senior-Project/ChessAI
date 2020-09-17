@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 public class Engine extends Thread{
     final int FPS = 60;
@@ -168,18 +169,17 @@ public class Engine extends Thread{
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
                         break;
                         case won:
+                            statusPanel.updateMove_Count(++move_count);
                             combatGUI.getPiece_one().move(combatGUI.getPiece_two().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
                             combatGUI.getPiece_two().getCurrent_Team().get_Chess_Pieces().remove(combatGUI.getPiece_two());
-                            statusPanel.updateMove_Count(++move_count);
                             capturePanels[combatGUI.getPiece_two().getCurrent_Team() == teams[0] ? 0 : 1].addCapture(combatGUI.getPiece_two().getImage());
                         break;
                         case lost:
+                            statusPanel.updateMove_Count(++move_count);
                             combatGUI.getPiece_one().setCurrent_Tile(combatGUI.getPiece_one().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
-                            statusPanel.updateMove_Count(++move_count);
                             break;
-
                     }
                     state = GameState.running;
                 }
@@ -224,6 +224,9 @@ public class Engine extends Thread{
     }
     public static Team current_Turn(){return teams[turn % 2];}
     public static Team next_Turn(){
+        move_count = 0;
+        statusPanel.updateMove_Count(move_count);
+        statusPanel.updatePlayer_Turn(((turn + 1) % 2) + 1);
         gameBoard.setSelected_piece(null);
         return teams[++turn % 2];
     }
