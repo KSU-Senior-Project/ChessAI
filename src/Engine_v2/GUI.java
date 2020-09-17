@@ -1,4 +1,4 @@
-package Engine;
+package Engine_v2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,16 +6,12 @@ import java.awt.*;
 
 /*Base GUI class*/
 public class GUI extends JFrame{
+    private GameBoard gameBoard;
+    private ActionLog log;
+    private CapturePanel[] capturePanels;
+    private StatusPanel statusPanel;
 
-    public static Painter painter;
-    public static ActionLog log;
-    public static final int SQUARE_SIZE = 60;
-    public final int SPACER_WIDTH = 300;
-    public final int LOG_HEIGHT = 100;
-    public final int STATUS_HEIGHT = 40;
-    public static CapturePanel[] capturePanels;
-
-    public GUI(){
+    public GUI(int SQUARE_SIZE,int SPACER_WIDTH,int STATUS_HEIGHT,int LOG_HEIGHT){
         super("Chess AI");
         this.setLayout(new BorderLayout());
         this.setBackground(Color.BLACK);
@@ -25,14 +21,11 @@ public class GUI extends JFrame{
         file.add(new_game);
         menu.add(file);
         this.setJMenuBar(menu);
-        
-        new Engine();
-        //status panel to show whos turn - moves made - and a button to end turn
-        StatusPanel status = new StatusPanel(this.getWidth(), STATUS_HEIGHT);
-        this.getContentPane().add(status, BorderLayout.NORTH);
+
+        statusPanel = new StatusPanel(this.getWidth(), STATUS_HEIGHT);
+        this.getContentPane().add(statusPanel, BorderLayout.NORTH);
 
         capturePanels = new CapturePanel[2];
-        //capture panels to show total captures each player has made
         capturePanels[0] = new CapturePanel(SPACER_WIDTH, this.getHeight(),1);
         this.getContentPane().add(capturePanels[0], BorderLayout.WEST);
 
@@ -65,17 +58,17 @@ public class GUI extends JFrame{
             full_board.add(row,constraints);
         }
 
-        painter = new Painter();
+        gameBoard = new GameBoard(SQUARE_SIZE);
         constraints.gridx = 1;
         constraints.gridy = 1;
         constraints.gridwidth = 8;
         constraints.gridheight = 8;
-        full_board.add(painter,constraints);
+        full_board.add(gameBoard,constraints);
         this.getContentPane().add(full_board, BorderLayout.CENTER);
 
         this.setVisible(true);
         this.requestFocus();
-        painter.repaint();
+        gameBoard.repaint();
         
         //a scrollable text area to log the actions of the game
         log = new ActionLog(this.getWidth(), LOG_HEIGHT);
@@ -83,8 +76,19 @@ public class GUI extends JFrame{
         
         this.pack();
         this.setLocationRelativeTo(null);
-        
-        
+    }
+
+    public GameBoard getGameBoard(){
+        return this.gameBoard;
+    }
+    public CapturePanel[] getCapturePanels(){
+        return this.capturePanels;
+    }
+    public ActionLog getLog(){
+        return this.log;
+    }
+    public StatusPanel getStatusPanel(){
+        return this.statusPanel;
     }
 
 }

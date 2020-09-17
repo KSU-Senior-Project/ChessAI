@@ -2,7 +2,9 @@ package Combat;
 
 import Chess.Pieces.BasePiece;
 import Dice.Dice;
-import Engine.Engine;
+import Engine_v2.Engine;
+import Engine_v2.GameBoard;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -21,14 +23,25 @@ public class CombatGUI extends JFrame {
     private int current_roll;
     private Random random;
     private Dice currentDice;
+    private Object lock;
+    JLabel results;
+    public enum CombatState{
+        running,
+        leave,
+        won,
+        lost
+    }
+    private CombatState state;
 
     /*REDO OR REWRITE WHOLE CLASS, I WROTE IT POORLY*/
 
     public CombatGUI(BasePiece piece_one,BasePiece piece_two){
+        state = CombatState.running;
         setPiece_one(piece_one);
         setPiece_two(piece_two);
         combat_stats = Engine.get_Rolls(piece_one.getID(),piece_two.getID());
         random = new Random();
+        lock = new Object();
 
         setSize(new Dimension(400,400));
         setLayout(new BorderLayout());
@@ -42,7 +55,9 @@ public class CombatGUI extends JFrame {
 
         dicePanel = new JPanel();
         this.getContentPane().add(dicePanel,BorderLayout.CENTER);
-        dicePanel.setLayout(new GridLayout(1,1));
+        dicePanel.setLayout(new GridLayout(3,1));
+        results = new JLabel("",SwingConstants.CENTER);
+        dicePanel.add(results);
         dicePanel.add(new JLabel(new ImageIcon(getRandom_Dice().getImage())));
 
         JLabel stats_needed = new JLabel(String.format("Dice Rolls Needed: "),SwingConstants.CENTER);
@@ -58,9 +73,11 @@ public class CombatGUI extends JFrame {
         roll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                roll_count = random.nextInt(5) + 5;
-                current_roll = 0;
-                randomize_roll.start();
+                if(state == CombatState.running){
+                    roll_count = random.nextInt(5) + 5;
+                    current_roll = 0;
+                    randomize_roll.start();
+                }
             }
         });
         roll.setSize(new Dimension(100,50));
@@ -70,26 +87,50 @@ public class CombatGUI extends JFrame {
         leave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                if(state == CombatState.running)
+                    state = CombatState.leave;
+                setVisible(false);
             }
         });
         leave.setSize(new Dimension(100,50));
         options.add(leave);
         this.getContentPane().add(options,BorderLayout.SOUTH);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     public ActionListener update_dice = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(current_roll++ > roll_count)
+            if(current_roll++ > roll_count) {
                 randomize_roll.stop();
-            dicePanel.invalidate();
-            dicePanel.removeAll();
-            dicePanel.add(new JLabel(new ImageIcon(getRandom_Dice().getImage())));
-            dicePanel.revalidate();
+                System.out.println(currentDice.getNumber());
+                if(currentDice.getNumber() >= combat_stats[combat_stats.length - 1]){
+                    results.setText("WON!");
+                    state = CombatState.won;
+                }else{
+                    results.setText("LOST!");
+                    state = CombatState.lost;
+                }
+                close_window.start();
+            }else {
+                dicePanel.invalidate();
+                dicePanel.remove(1);
+                dicePanel.add(new JLabel(new ImageIcon(getRandom_Dice().getImage())));
+                dicePanel.revalidate();
+            }
+        }
+    };
+    public ActionListener hide = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            close_window.stop();
+            setVisible(false);
         }
     };
     private Timer randomize_roll = new Timer(200,update_dice);
+    private Timer close_window = new Timer(1000,hide);
+
 
     public Dice getRandom_Dice(){
         this.currentDice = Engine.dice[random.nextInt(6)];
@@ -110,5 +151,9 @@ public class CombatGUI extends JFrame {
 
     public void setPiece_two(BasePiece piece_two) {
         this.piece_two = piece_two;
+    }
+
+    public CombatState getCombatState(){
+        return this.state;
     }
 }
