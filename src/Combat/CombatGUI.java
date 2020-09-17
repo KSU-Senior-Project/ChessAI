@@ -24,6 +24,7 @@ public class CombatGUI extends JFrame {
     private Random random;
     private Dice currentDice;
     private Object lock;
+    private int diceModifier;
     JLabel results;
     public enum CombatState{
         running,
@@ -35,7 +36,7 @@ public class CombatGUI extends JFrame {
 
     /*REDO OR REWRITE WHOLE CLASS, I WROTE IT POORLY*/
 
-    public CombatGUI(BasePiece piece_one,BasePiece piece_two){
+    public CombatGUI(BasePiece piece_one,BasePiece piece_two,int diceModifier){
         state = CombatState.running;
         setPiece_one(piece_one);
         setPiece_two(piece_two);
@@ -64,6 +65,8 @@ public class CombatGUI extends JFrame {
         stats_needed.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         for(int i : combat_stats)
             stats_needed.setText(stats_needed.getText() + " " + i);
+        if(diceModifier != 0)
+            stats_needed.setText(stats_needed.getText() + ", Minus 1 to overall score");
 
         this.getContentPane().add(stats_needed,BorderLayout.NORTH);
 
@@ -105,7 +108,7 @@ public class CombatGUI extends JFrame {
             if(current_roll++ > roll_count) {
                 randomize_roll.stop();
                 System.out.println(currentDice.getNumber());
-                if(currentDice.getNumber() >= combat_stats[combat_stats.length - 1]){
+                if(currentDice.getNumber() + diceModifier >= combat_stats[combat_stats.length - 1]){
                     results.setText("WON!");
                     state = CombatState.won;
                 }else{

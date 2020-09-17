@@ -199,7 +199,9 @@ public class Engine extends Thread{
             ActionLog.appendAction(String.format("Starting Combat Between %s and %s",selected_piece.getName(),move_to_tile.getCurrent_piece().getName()));
             Thread thread = new Thread(){
                 public void run(){
-                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece());
+                    BasePiece piece = move_to_tile.getCurrent_piece();
+                    int distance = Math.abs(selected_piece.getY() - piece.getY()) + Math.abs(selected_piece.getX() - piece.getMiddle_x());
+                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece(),selected_piece.getName().equals("Knight") && distance > 1 ? -1 : 0);
                     state = GameState.combat;
                 }
             };
