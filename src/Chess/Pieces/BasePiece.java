@@ -2,7 +2,7 @@ package Chess.Pieces;
 
 import Chess.Team.Team;
 import Chess.Tile.Tile;
-import Engine.Engine;
+import Engine_v2.Engine;
 
 import java.awt.*;
 import java.util.List;
@@ -111,7 +111,7 @@ public abstract class BasePiece extends MoveableImage{
         return distance <= movement_distance && !Engine.isOccupied_Tile(x,y);
     }
     public boolean can_capture_tile(int x,int y,int distance){
-        return distance <= Math.max(attack_distance,movement_distance) && Engine.isEnemy_Tile(x,y,this);
+        return distance <= attack_distance && Engine.isEnemy_Tile(x,y,this);
     }
 
     public List<Tile> getAvailable_movements(){

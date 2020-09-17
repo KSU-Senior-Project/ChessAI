@@ -1,7 +1,7 @@
 package Chess.Pieces;
 
 import Chess.Tile.Tile;
-import Engine.Engine;
+import Engine_v2.Engine;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,13 +15,7 @@ public class Pawn extends BasePiece {
         super(image, current_Tile,"Pawn",ID);
         setDirection(direction);
         setCurrent_Tile(current_Tile);
-        this.movement_distance = 2;
-    }
-    @Override
-    public void move(Tile tile){
-        movement_distance = 1;
-        setCurrent_Tile(tile);
-        update_movement();
+        this.movement_distance = 1;
     }
     @Override
     public boolean can_move_to_tile(int x,int y,int distance){
