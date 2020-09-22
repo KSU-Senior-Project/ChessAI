@@ -34,11 +34,12 @@ public class Engine extends Thread{
     public static int turn = 0;
     public static CombatGUI combatGUI;
 
-    enum GameState {
+    public enum GameState {
         paused,
         combat,
         running,
-        stop
+        stop,
+        end
     }
 
     public static GameState state;
@@ -184,6 +185,9 @@ public class Engine extends Thread{
                     state = GameState.running;
                 }
                 break;
+            case end:
+                this.stop();
+
             default:
                 break;
         }

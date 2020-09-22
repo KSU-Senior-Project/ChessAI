@@ -1,6 +1,7 @@
 package Chess.Team;
 
 import Chess.Pieces.BasePiece;
+import Engine_v2.Engine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +30,11 @@ public class Team {
     public void addChess_Piece(BasePiece piece){
         this.chess_pieces.add(piece);
         piece.setCurrent_Team(this);
+    }
+    public void removePiece(BasePiece piece){
+        this.chess_pieces.remove(piece);
+        if(piece.getName().equals("King")){
+            Engine.state = Engine.GameState.end;
+        }
     }
 }
