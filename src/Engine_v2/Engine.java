@@ -198,7 +198,7 @@ public class Engine extends Thread{
         if(move_to_tile.getCurrent_piece() == null){
             if(selected_piece.getName().equals("Pawn") && selected_piece.movement_distance == 1){
                 selected_piece.setMovement_Distance(2);
-                selected_piece.setAttack_distance(2);
+                selected_piece.setAttack_Distance(2);
             }
             selected_piece.move(move_to_tile);
             statusPanel.updateMove_Count(++move_count);

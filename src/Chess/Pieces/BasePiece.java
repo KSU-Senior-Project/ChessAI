@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public abstract class BasePiece extends MoveableImage{
     private Team current_Team;
     private Tile current_Tile;
+    private boolean ignore_Collision = false; //Rooks can just over two pieces when trying to capture
     public static int DIRECTION_UP = -1;
     public static int DIRECTION_DOWN = 0;
     public String Name;
@@ -26,6 +27,9 @@ public abstract class BasePiece extends MoveableImage{
         setName(Name);
         setID(ID);
         setCurrent_Tile(current_Tile);
+        if (Name.equals("Rook")){
+            setIgnore_Collision(true);
+        }
     }
 
     public Tile getCurrent_Tile() {
@@ -67,7 +71,11 @@ public abstract class BasePiece extends MoveableImage{
 
     public void setMovement_Distance(int movement_distance){ this.movement_distance = movement_distance; }
 
-    public void setAttack_distance(int movement_distance){ this.attack_distance = movement_distance; }
+    public void setAttack_Distance(int movement_distance){ this.attack_distance = movement_distance; }
+
+    public void setIgnore_Collision(boolean ignore_Collision){ this.ignore_Collision = ignore_Collision; }
+
+    public boolean getIgnore_Collision(){ return ignore_Collision; }
 
     private class TileDistance{
         public int distance;
@@ -102,8 +110,9 @@ public abstract class BasePiece extends MoveableImage{
 
             if(!Engine.inBounds(x,y) || available_captures.contains(Engine.tiles[y][x]) || available_movements.contains(Engine.tiles[y][x]))
                 continue;
-
-            if(current.distance + 1 < Math.max(movement_distance,attack_distance) && !Engine.isOccupied_Tile(x,y))
+            if(current.distance + 1 < Math.max(movement_distance,attack_distance) && this.Name.equals("Rook") && (!Engine.isOccupied_Tile(x,y) || Engine.isEnemy_Tile(x,y,this)))
+                open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
+            else if(current.distance + 1 < Math.max(movement_distance,attack_distance) && !Engine.isOccupied_Tile(x,y))
                 open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
             if(can_move_to_tile(x,y,current.distance + 1))
                 available_movements.add(Engine.tiles[y][x]);
