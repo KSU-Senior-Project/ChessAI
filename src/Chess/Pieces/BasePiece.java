@@ -65,6 +65,8 @@ public abstract class BasePiece extends MoveableImage{
         this.current_Team = current_Team;
     }
 
+    public void setMovement_distance(int movement_distance){ this.movement_distance = movement_distance; }
+
     private class TileDistance{
         public int distance;
         public Point direction;

@@ -199,6 +199,9 @@ public class Engine extends Thread{
             selected_piece.move(move_to_tile);
             statusPanel.updateMove_Count(++move_count);
             ActionLog.appendAction(String.format("Moving %s to %s",selected_piece.getName(),move_to_tile.getName()));
+            if(selected_piece.getName().equals("Pawn") && selected_piece.movement_distance == 1){
+                selected_piece.setMovement_distance(2);
+            }
         }else if(move_to_tile.getCurrent_piece().getCurrent_Team() != current_Turn()){
             ActionLog.appendAction(String.format("Starting Combat Between %s and %s",selected_piece.getName(),move_to_tile.getCurrent_piece().getName()));
             Thread thread = new Thread(){
