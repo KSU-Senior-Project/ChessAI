@@ -65,7 +65,9 @@ public abstract class BasePiece extends MoveableImage{
         this.current_Team = current_Team;
     }
 
-    public void setMovement_distance(int movement_distance){ this.movement_distance = movement_distance; }
+    public void setMovement_Distance(int movement_distance){ this.movement_distance = movement_distance; }
+
+    public void setAttack_distance(int movement_distance){ this.attack_distance = movement_distance; }
 
     private class TileDistance{
         public int distance;
@@ -113,7 +115,10 @@ public abstract class BasePiece extends MoveableImage{
         return distance <= movement_distance && !Engine.isOccupied_Tile(x,y);
     }
     public boolean can_capture_tile(int x,int y,int distance){
-        return distance <= attack_distance && Engine.isEnemy_Tile(x,y,this);
+        if(Engine.move_count >= 2){
+            return false;
+        }
+        else return distance <= attack_distance && Engine.isEnemy_Tile(x,y,this);
     }
 
     public List<Tile> getAvailable_movements(){
