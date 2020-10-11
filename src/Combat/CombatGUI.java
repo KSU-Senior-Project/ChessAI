@@ -3,8 +3,8 @@ package Combat;
 import Chess.Pieces.BasePiece;
 import Dice.Dice;
 import Engine_v2.Engine;
-import Engine_v2.GameBoard;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+//import Engine_v2.GameBoard;
+//import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -18,7 +18,10 @@ public class CombatGUI extends JFrame {
     private BasePiece piece_one;
     private BasePiece piece_two;
     private int[] combat_stats;
-    private JPanel dicePanel;
+
+    public JPanel dicePanel;
+    public JButton roll;
+
     private int roll_count;
     private int current_roll;
     private Random random;
@@ -26,6 +29,8 @@ public class CombatGUI extends JFrame {
     private Object lock;
     private int diceModifier;
     JLabel results;
+
+
     public enum CombatState{
         running,
         leave,
@@ -36,8 +41,8 @@ public class CombatGUI extends JFrame {
 
     /*REDO OR REWRITE WHOLE CLASS, I WROTE IT POORLY*/
 
-    public CombatGUI(BasePiece piece_one,BasePiece piece_two,int diceModifier){
-        this.diceModifier = diceModifier;
+    public CombatGUI(BasePiece piece_one,BasePiece piece_two){
+//        this.diceModifier = diceModifier;
         state = CombatState.running;
         setPiece_one(piece_one);
         setPiece_two(piece_two);
@@ -72,6 +77,8 @@ public class CombatGUI extends JFrame {
         this.getContentPane().add(stats_needed,BorderLayout.NORTH);
 
         JPanel options = new JPanel();
+
+        roll = new JButton();
         JButton roll = new JButton("Roll");
 
         roll.addActionListener(new ActionListener() {
