@@ -40,6 +40,8 @@ public class Engine extends Thread{
     private static ArrayList<BasePiece> leftBishopCorp = new ArrayList<>();
     private static ArrayList<BasePiece> rightBishopCorp = new ArrayList<>();
     private static ArrayList<BasePiece> kingCorp = new ArrayList<>();
+
+    //each corp gets one move per turn.
     private static int bishop1MoveCount = 0;
     private static int bishop2MoveCount = 0;
     private static int king2MoveCount = 0;
