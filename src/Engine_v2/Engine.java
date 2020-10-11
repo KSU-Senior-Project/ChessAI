@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 import java.util.ArrayList;
 
 public class Engine extends Thread{
@@ -33,6 +34,16 @@ public class Engine extends Thread{
     public static int move_count = 0;
     public static int turn = 0;
     public static CombatGUI combatGUI;
+    public static BasePiece leftBishopCommander;
+    public static BasePiece rightBishopCommander;
+    public static BasePiece kingCommander;
+    private static ArrayList<BasePiece> leftBishopCorp = new ArrayList<>();
+    private static ArrayList<BasePiece> rightBishopCorp = new ArrayList<>();
+    private static ArrayList<BasePiece> kingCorp = new ArrayList<>();
+    private static int bishop1MoveCount = 0;
+    private static int bishop2MoveCount = 0;
+    private static int king2MoveCount = 0;
+
 
     public enum GameState {
         paused,
@@ -128,6 +139,27 @@ public class Engine extends Thread{
                 }
             }
         }
+        //Create the three AI groups
+        leftBishopCommander = teams[1].get_Chess_Pieces().get(10);
+        rightBishopCommander = teams[1].get_Chess_Pieces().get(13);
+        kingCommander = teams[1].get_Chess_Pieces().get(11);
+
+        leftBishopCorp.add(teams[1].get_Chess_Pieces().get(0));
+        leftBishopCorp.add(teams[1].get_Chess_Pieces().get(1));
+        leftBishopCorp.add(teams[1].get_Chess_Pieces().get(2));
+        leftBishopCorp.add(teams[1].get_Chess_Pieces().get(9));
+
+        rightBishopCorp.add(teams[1].get_Chess_Pieces().get(5));
+        rightBishopCorp.add(teams[1].get_Chess_Pieces().get(6));
+        rightBishopCorp.add(teams[1].get_Chess_Pieces().get(7));
+        rightBishopCorp.add(teams[1].get_Chess_Pieces().get(14));
+
+        kingCorp.add((teams[1].get_Chess_Pieces().get(3)));
+        kingCorp.add((teams[1].get_Chess_Pieces().get(4)));
+        kingCorp.add((teams[1].get_Chess_Pieces().get(8)));
+        kingCorp.add((teams[1].get_Chess_Pieces().get(12)));
+        kingCorp.add((teams[1].get_Chess_Pieces().get(15)));
+
         state = GameState.running;
 
         mainFrame = new GUI(SQUARE_SIZE,SPACER_WIDTH,STATUS_HEIGHT,LOG_HEIGHT);
@@ -223,8 +255,9 @@ public class Engine extends Thread{
         }
         return true;
     }
-    public static void find_move(){
-        
+    //AI find best move here, currently just ends turn
+    public static void find_Move(){
+        next_Turn();
     }
 
 
@@ -249,9 +282,9 @@ public class Engine extends Thread{
         ActionLog.appendAction(String.format("Player %s ended turn. ", ((turn) % 2) + 1));
         gameBoard.setSelected_piece(null);
         ++turn;
-      /*  if (current_Turn() == teams[1]){
-            Find_Move();
+        if (current_Turn() == teams[1]){
+            find_Move();
         }
-    */
+
     }
 }
