@@ -13,6 +13,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Engine_v2.Engine.teams;
 
 /*Base Painter JPanel that will control underlying rendering*/
 public class GameBoard extends JPanel implements MouseMotionListener, MouseListener {
@@ -70,7 +71,7 @@ public class GameBoard extends JPanel implements MouseMotionListener, MouseListe
             if(availableMovements.contains(getRelativeTile()) || availableCaptures.contains(getRelativeTile())) {
                 Engine.make_move(selectedPiece, Engine.tiles[relative_y][relative_x]);
                 setSelected_piece(getClickedPiece());
-            }else{
+            }else if (getClickedPiece().getCurrent_Team() == teams[0]){
                 selectedPiece.setCurrent_Tile(selectedPiece.getCurrent_Tile());
             }
         }
