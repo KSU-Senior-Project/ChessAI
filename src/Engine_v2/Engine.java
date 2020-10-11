@@ -19,6 +19,7 @@ public class Engine extends Thread{
     public static StatusPanel statusPanel;
     public static ActionLog log;
     public static CapturePanel[] capturePanels;
+    public static Tile tile;
 
     public static final int SQUARE_SIZE = 60;
     public static final int SPACER_WIDTH = 300;
@@ -33,13 +34,13 @@ public class Engine extends Thread{
     public static int move_count = 0;
     public static int turn = 0;
     public static CombatGUI combatGUI;
+    public static BasePiece basePiece;
 
-    public enum GameState {
+    enum GameState {
         paused,
         combat,
         running,
-        stop,
-        end
+        stop
     }
 
     public static GameState state;
@@ -170,28 +171,21 @@ public class Engine extends Thread{
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
                         break;
                         case won:
-
                             statusPanel.updateMove_Count(++move_count);
                             combatGUI.getPiece_one().move(combatGUI.getPiece_two().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
-                            ActionLog.appendAction(String.format("%s won combat, moving %s to %s", combatGUI.getPiece_one().getName(),  combatGUI.getPiece_one().getName(), combatGUI.getPiece_two().getCurrent_Tile().getName()));
                             combatGUI.getPiece_two().getCurrent_Team().get_Chess_Pieces().remove(combatGUI.getPiece_two());
                             capturePanels[combatGUI.getPiece_two().getCurrent_Team() == teams[0] ? 0 : 1].addCapture(combatGUI.getPiece_two().getImage());
-
                         break;
                         case lost:
-                            ActionLog.appendAction(String.format("%s lost combat, %s stays at %s", combatGUI.getPiece_one().getName(),  combatGUI.getPiece_one().getName(), combatGUI.getPiece_one().getCurrent_Tile().getName()));
+                            statusPanel.updateMove_Count(++move_count);
                             combatGUI.getPiece_one().setCurrent_Tile(combatGUI.getPiece_one().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
-
                             break;
                     }
                     state = GameState.running;
                 }
                 break;
-            case end:
-                this.stop();
-
             default:
                 break;
         }
@@ -200,26 +194,86 @@ public class Engine extends Thread{
 
     public static boolean make_move(BasePiece selected_piece,Tile move_to_tile){
         if(move_to_tile.getCurrent_piece() == null){
-            if(selected_piece.getName().equals("Pawn") && selected_piece.movement_distance == 1){
-                selected_piece.setMovement_Distance(2);
-                selected_piece.setAttack_Distance(2);
-            }
             selected_piece.move(move_to_tile);
             statusPanel.updateMove_Count(++move_count);
             ActionLog.appendAction(String.format("Moving %s to %s",selected_piece.getName(),move_to_tile.getName()));
+            if (((turn + 1) % 2) == 1 && move_count == 3){
+                statusPanel.endTurnButton.doClick();
+                int k = 0;
+                while (k < 3){
+                    int index = (int) (Math.random() * teams[1].get_Chess_Pieces().size());
+                    basePiece = teams[1].get_Chess_Pieces().get(index);
+                    gameBoard.setSelected_piece(basePiece);
 
-        }else if(move_to_tile.getCurrent_piece().getCurrent_Team() != current_Turn()){
+                    if (selected_piece.available_movements != null){
+                        int index_1 = (int) (Math.random() * selected_piece.available_movements.size());
+                        basePiece.move(tiles[selected_piece.available_movements.get(index_1).getRelative_y()][selected_piece.available_movements.get(index_1).getRelative_x()]);
+                        ActionLog.appendAction(String.format("Moving %s to %s", basePiece.getName(), move_to_tile.getName()));
+
+                        gameBoard.repaint();
+                        k = k+1;
+                    }
+                }
+                statusPanel.endTurnButton.doClick();
+            }
+        }else if((turn + 1) % 2 == 1 && move_count!=2){
             ActionLog.appendAction(String.format("Starting Combat Between %s and %s",selected_piece.getName(),move_to_tile.getCurrent_piece().getName()));
             Thread thread = new Thread(){
                 public void run(){
-                    statusPanel.updateMove_Count(++move_count); //Move count for attempt to capture, is increased again when capture is successful, but not when lost.
-                    BasePiece piece = move_to_tile.getCurrent_piece();
-                    int distance = Math.abs(selected_piece.getY() - piece.getY()) + Math.abs(selected_piece.getX() - piece.getMiddle_x());
-                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece(),selected_piece.getName().equals("Knight") && distance > 1 ? -1 : 0);
+                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece());
                     state = GameState.combat;
                 }
             };
             thread.start();
+        }else if((turn + 1) % 2 == 0 && move_count!=2) {
+            ActionLog.appendAction(String.format("Starting Combat Between %s and %s", selected_piece.getName(), move_to_tile.getCurrent_piece().getName()));
+            Thread thread = new Thread() {
+                public void run() {
+                    combatGUI = new CombatGUI(selected_piece, move_to_tile.getCurrent_piece());
+                    state = GameState.combat;
+                }
+            };
+            thread.start();
+            while(combatGUI.dicePanel.isVisible()){
+                combatGUI.roll.doClick();
+            }
+        }else if((turn + 1) % 2 == 0 && move_count==2){
+            ActionLog.appendAction(String.format("Starting Combat Between %s and %s",selected_piece.getName(),move_to_tile.getCurrent_piece().getName()));
+            Thread thread = new Thread(){
+                public void run(){
+                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece());
+                    state = GameState.combat;
+                }
+            };
+            thread.start();
+            while(combatGUI.dicePanel.isVisible()){
+                combatGUI.roll.doClick();
+            }
+            statusPanel.endTurnButton.doClick();
+        }else if((turn + 1) % 2 == 1 && move_count==2){
+            ActionLog.appendAction(String.format("Starting Combat Between %s and %s",selected_piece.getName(),move_to_tile.getCurrent_piece().getName()));
+            Thread thread = new Thread(){
+                public void run(){
+                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece());
+                    state = GameState.combat;
+                }
+            };
+            thread.start();
+            statusPanel.endTurnButton.doClick();
+            int k=0;
+            while (k<3){
+                int index = (int) (Math.random()* teams[1].get_Chess_Pieces().size());
+                basePiece=teams[1].get_Chess_Pieces().get(index);
+                gameBoard.setSelected_piece(basePiece);
+                if (selected_piece.available_movements!=null && !selected_piece.available_movements.isEmpty()){
+                    int index1 = (int) (Math.random()* selected_piece.available_movements.size());
+                    basePiece.move(tiles[selected_piece.available_movements.get(index1).getRelative_y()][selected_piece.available_movements.get(index1).getRelative_x()]);
+                    ActionLog.appendAction(String.format("Moving %s to %s",basePiece.getName(),move_to_tile.getName()));
+                    gameBoard.repaint();
+                    k=k+1;
+                }
+            }
+//            statusPanel.endTurnButton.doClick();
         }
         return true;
     }
@@ -243,7 +297,6 @@ public class Engine extends Thread{
         move_count = 0;
         statusPanel.updateMove_Count(move_count);
         statusPanel.updatePlayer_Turn(((turn + 1) % 2) + 1);
-        ActionLog.appendAction(String.format("Player %s ended turn. ", ((turn) % 2) + 1));
         gameBoard.setSelected_piece(null);
         return teams[++turn % 2];
     }
