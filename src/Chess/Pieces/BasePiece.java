@@ -110,7 +110,7 @@ public abstract class BasePiece extends MoveableImage{
 
             if(!Engine.inBounds(x,y) || available_captures.contains(Engine.tiles[y][x]) || available_movements.contains(Engine.tiles[y][x]))
                 continue;
-            if(current.distance + 1 < Math.max(movement_distance,attack_distance) && this.Name.equals("Rook") && (!Engine.isOccupied_Tile(x,y) || Engine.isEnemy_Tile(x,y,this)))
+            if(current.distance + 1 < Math.max(movement_distance,attack_distance) && this.getIgnore_Collision() && (!Engine.isOccupied_Tile(x,y) || Engine.isEnemy_Tile(x,y,this)))
                 open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
             else if(current.distance + 1 < Math.max(movement_distance,attack_distance) && !Engine.isOccupied_Tile(x,y))
                 open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
