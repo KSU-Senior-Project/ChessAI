@@ -31,10 +31,10 @@ public class Team {
         this.chess_pieces.add(piece);
         piece.setCurrent_Team(this);
     }
-//     public void removePiece(BasePiece piece){
-//         this.chess_pieces.remove(piece);
-//         if(piece.getName().equals("King")){
-//             Engine.state = Engine.GameState.end;
-//         }
-//     }
+    public void removePiece(BasePiece piece){
+        this.chess_pieces.remove(piece);
+        if(piece.getName().equals("King")){
+            Engine.state = Engine.GameState.end;
+        }
+    }
 }
