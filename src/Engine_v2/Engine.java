@@ -43,6 +43,7 @@ public class Engine extends Thread{
     private static int bishop1MoveCount = 0;
     private static int bishop2MoveCount = 0;
     private static int king2MoveCount = 0;
+    private static int treeDepth = 5; //Number of turns to look ahead
 
 
     public enum GameState {
@@ -212,6 +213,7 @@ public class Engine extends Thread{
 
                         break;
                         case lost:
+                            statusPanel.updateMove_Count(++move_count);
                             ActionLog.appendAction(String.format("%s lost combat, %s stays at %s", combatGUI.getPiece_one().getName(),  combatGUI.getPiece_one().getName(), combatGUI.getPiece_one().getCurrent_Tile().getName()));
                             combatGUI.getPiece_one().setCurrent_Tile(combatGUI.getPiece_one().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
@@ -244,7 +246,6 @@ public class Engine extends Thread{
             ActionLog.appendAction(String.format("Starting Combat Between %s and %s",selected_piece.getName(),move_to_tile.getCurrent_piece().getName()));
             Thread thread = new Thread(){
                 public void run(){
-                    statusPanel.updateMove_Count(++move_count); //Move count for attempt to capture, is increased again when capture is successful, but not when lost.
                     BasePiece piece = move_to_tile.getCurrent_piece();
                     int distance = Math.abs(selected_piece.getY() - piece.getY()) + Math.abs(selected_piece.getX() - piece.getMiddle_x());
                     combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece(),selected_piece.getName().equals("Knight") && distance > 1 ? -1 : 0);
