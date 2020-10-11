@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class StatusPanel extends JPanel {
 	private JLabel turnLabel;
 	private JLabel moveLabel;
-	public JButton endTurnButton;
+	private JButton endTurnButton;
 	
 	public StatusPanel(int w, int h) {
 		setLayout(new GridLayout(1,3));
