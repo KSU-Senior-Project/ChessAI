@@ -223,6 +223,9 @@ public class Engine extends Thread{
         }
         return true;
     }
+    public static void find_move(){
+        
+    }
 
 
     public static int[] get_Rolls(int y,int x){
@@ -239,12 +242,16 @@ public class Engine extends Thread{
         return x >=0 && x < 8 && y >= 0 && y < 8;
     }
     public static Team current_Turn(){return teams[turn % 2];}
-    public static Team next_Turn(){
+    public static void next_Turn(){
         move_count = 0;
         statusPanel.updateMove_Count(move_count);
         statusPanel.updatePlayer_Turn(((turn + 1) % 2) + 1);
         ActionLog.appendAction(String.format("Player %s ended turn. ", ((turn) % 2) + 1));
         gameBoard.setSelected_piece(null);
-        return teams[++turn % 2];
+        ++turn;
+      /*  if (current_Turn() == teams[1]){
+            Find_Move();
+        }
+    */
     }
 }
