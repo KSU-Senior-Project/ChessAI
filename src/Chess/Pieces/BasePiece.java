@@ -20,6 +20,7 @@ public abstract class BasePiece extends MoveableImage{
     public List<Tile> available_captures = new ArrayList<Tile>();
     public int movement_distance = 1;
     public int attack_distance = 1;
+    public String previousMove = "";
 
 
     public BasePiece(Image image, Tile current_Tile,String Name,int ID) {
@@ -77,6 +78,10 @@ public abstract class BasePiece extends MoveableImage{
 
     public boolean getIgnore_Collision(){ return ignore_Collision; }
 
+    public void setPreviousMove(String previousMove){
+        this.previousMove = previousMove;
+    }
+
     private class TileDistance{
         public int distance;
         public Point direction;
@@ -114,16 +119,21 @@ public abstract class BasePiece extends MoveableImage{
                 open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
             else if(current.distance + 1 < Math.max(movement_distance,attack_distance) && !Engine.isOccupied_Tile(x,y))
                 open.add(new TileDistance(Engine.tiles[y][x],current.direction,current.distance + 1));
+
             if(can_move_to_tile(x,y,current.distance + 1))
                 available_movements.add(Engine.tiles[y][x]);
+
             if(can_capture_tile(x,y,current.distance + 1))
                 available_captures.add(Engine.tiles[y][x]);
+
         }
     }
     public boolean can_move_to_tile(int x,int y,int distance){
         return distance <= movement_distance && !Engine.isOccupied_Tile(x,y);
     }
     public boolean can_capture_tile(int x,int y,int distance){
+        if(getName().equals("Knight") && Engine.move_count >= 3 && previousMove.equals("move") && Engine.isDiagonal(getCurrent_Tile(), Engine.tiles[y][x]))
+            return false;
         return distance <= attack_distance && Engine.isEnemy_Tile(x,y,this);
     }
 

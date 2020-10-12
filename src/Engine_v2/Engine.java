@@ -203,23 +203,29 @@ public class Engine extends Thread{
                         case leave:
                             combatGUI.getPiece_one().setCurrent_Tile(combatGUI.getPiece_one().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
+                            combatGUI.getPiece_one().setPreviousMove("move");
                         break;
                         case won:
-
-                            statusPanel.updateMove_Count(++move_count);
+                            if(combatGUI.getDiceModifier() == 0) {
+                                statusPanel.updateMove_Count(++move_count);
+                            }
+                            combatGUI.getPiece_one().setPreviousMove("capture");
                             combatGUI.getPiece_one().move(combatGUI.getPiece_two().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
                             ActionLog.appendAction(String.format("%s won combat, moving %s to %s", combatGUI.getPiece_one().getName(),  combatGUI.getPiece_one().getName(), combatGUI.getPiece_two().getCurrent_Tile().getName()));
                             combatGUI.getPiece_two().getCurrent_Team().get_Chess_Pieces().remove(combatGUI.getPiece_two());
                             capturePanels[combatGUI.getPiece_two().getCurrent_Team() == teams[0] ? 0 : 1].addCapture(combatGUI.getPiece_two().getImage());
 
+
                         break;
                         case lost:
-                            statusPanel.updateMove_Count(++move_count);
+                            if(combatGUI.getDiceModifier() == 0) {
+                                statusPanel.updateMove_Count(++move_count);
+                            }
                             ActionLog.appendAction(String.format("%s lost combat, %s stays at %s", combatGUI.getPiece_one().getName(),  combatGUI.getPiece_one().getName(), combatGUI.getPiece_one().getCurrent_Tile().getName()));
                             combatGUI.getPiece_one().setCurrent_Tile(combatGUI.getPiece_one().getCurrent_Tile());
                             gameBoard.setSelected_piece(combatGUI.getPiece_one());
-
+                            combatGUI.getPiece_one().setPreviousMove("capture");
                             break;
                     }
                     state = GameState.running;
@@ -240,22 +246,26 @@ public class Engine extends Thread{
                 selected_piece.setMovement_Distance(2);
                 selected_piece.setAttack_Distance(2);
             }
-            selected_piece.move(move_to_tile);
             statusPanel.updateMove_Count(++move_count);
+            selected_piece.setPreviousMove("move");
+            selected_piece.move(move_to_tile);
             ActionLog.appendAction(String.format("Moving %s to %s",selected_piece.getName(),move_to_tile.getName()));
 
         }else if(move_to_tile.getCurrent_piece().getCurrent_Team() != current_Turn()){
+
             ActionLog.appendAction(String.format("Starting Combat Between %s and %s",selected_piece.getName(),move_to_tile.getCurrent_piece().getName()));
             Thread thread = new Thread(){
                 public void run(){
                     BasePiece piece = move_to_tile.getCurrent_piece();
                     int distance = Math.abs(selected_piece.getY() - piece.getY()) + Math.abs(selected_piece.getX() - piece.getMiddle_x());
-                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece(),selected_piece.getName().equals("Knight") && distance > 1 ? -1 : 0);
+                    combatGUI = new CombatGUI(selected_piece,move_to_tile.getCurrent_piece(),selected_piece.getName().equals("Knight") && distance > 1 && selected_piece.previousMove.equals("move") && !isDiagonal(selected_piece.getCurrent_Tile(), move_to_tile) ? -1 : 0);
                     state = GameState.combat;
+
                 }
             };
             thread.start();
         }
+
         return true;
     }
     //AI find best move here, currently just ends turn
@@ -266,6 +276,10 @@ public class Engine extends Thread{
 
     public static int[] get_Rolls(int y,int x){
         return combat_stats[y][x];
+    }
+
+    public static boolean isDiagonal(Tile a, Tile b){
+        return Math.abs(a.getRelative_x() - b.getRelative_x()) == Math.abs(a.getRelative_y() - b.getRelative_y());
     }
 
     public static boolean isEnemy_Tile(int x,int y,BasePiece piece){
@@ -279,7 +293,10 @@ public class Engine extends Thread{
     }
     public static Team current_Turn(){return teams[turn % 2];}
     public static void next_Turn(){
+
         move_count = 0;
+        teams[0].resetPreviousMoveAll();
+        teams[1].resetPreviousMoveAll();
         statusPanel.updateMove_Count(move_count);
         statusPanel.updatePlayer_Turn(((turn + 1) % 2) + 1);
         ActionLog.appendAction(String.format("Player %s ended turn. ", ((turn) % 2) + 1));

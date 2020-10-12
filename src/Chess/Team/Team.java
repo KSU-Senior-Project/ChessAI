@@ -37,4 +37,10 @@ public class Team {
             Engine.state = Engine.GameState.end;
         }
     }
+    public void resetPreviousMoveAll(){
+        for(int i = 0; i < chess_pieces.size(); i++){
+            chess_pieces.get(i).setPreviousMove("");
+        }
+
+    }
 }

@@ -160,4 +160,6 @@ public class CombatGUI extends JFrame {
     public CombatState getCombatState(){
         return this.state;
     }
+
+    public int getDiceModifier(){ return this.diceModifier; }
 }
