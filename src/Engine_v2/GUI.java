@@ -21,6 +21,10 @@ public class GUI extends JFrame{
         file.add(new_game);
         menu.add(file);
         this.setJMenuBar(menu);
+        new_game.addActionListener(e -> {
+            dispose();
+            new Engine();
+        });
 
         statusPanel = new StatusPanel(this.getWidth(), STATUS_HEIGHT);
         this.getContentPane().add(statusPanel, BorderLayout.NORTH);
