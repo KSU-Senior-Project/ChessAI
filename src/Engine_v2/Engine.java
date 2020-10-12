@@ -31,7 +31,7 @@ public class Engine extends Thread{
     public static Dice[] dice;
     public static Tile[][] tiles;
 
-    public static int move_count = 0;
+    public static int move_count;
     public static int turn = 0;
     public static CombatGUI combatGUI;
     public static BasePiece leftBishopCommander;
@@ -164,6 +164,7 @@ public class Engine extends Thread{
         kingCorp.add((teams[1].get_Chess_Pieces().get(15)));
 
         state = GameState.running;
+        move_count = 0;
 
         mainFrame = new GUI(SQUARE_SIZE,SPACER_WIDTH,STATUS_HEIGHT,LOG_HEIGHT);
         gameBoard = mainFrame.getGameBoard();
@@ -232,6 +233,8 @@ public class Engine extends Thread{
                 }
                 break;
             case end:
+                combatGUI.getPiece_one().setCurrent_Tile(combatGUI.getPiece_one().getCurrent_Tile());
+                gameBoard.setSelected_piece(combatGUI.getPiece_one());
                 this.stop();
 
             default:

@@ -1,5 +1,7 @@
 package Engine_v2;
 
+import sun.applet.Main;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -24,6 +26,7 @@ public class GUI extends JFrame{
         new_game.addActionListener(e -> {
             dispose();
             new Engine();
+
         });
 
         statusPanel = new StatusPanel(this.getWidth(), STATUS_HEIGHT);
@@ -81,6 +84,7 @@ public class GUI extends JFrame{
         this.pack();
         this.setLocationRelativeTo(null);
     }
+
 
     public GameBoard getGameBoard(){
         return this.gameBoard;
